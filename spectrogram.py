@@ -47,7 +47,7 @@ class Spectrogram(object):
         """ This function uses short-time Fourier transform (STFT) to calculate
         a spectrogram of the specified 'signal'. """
 
-        frame_starts = xrange(0, len(signal), frame_size - overlapping_size)
+        frame_starts = range(0, len(signal), frame_size - overlapping_size)
 
         self.__spectrogram = [
             spectrum(signal[frame_start:frame_start + frame_size], fft_length)
@@ -65,7 +65,7 @@ class Spectrogram(object):
         return len(self.__spectrogram)
 
     def get_frequencies(self, sampling_rate):
-        return numpy.linspace(0, 0.5, self.__fft_length / 2 + 1) * sampling_rate
+        return numpy.linspace(0, 0.5, int(self.__fft_length / 2 + 1)) * sampling_rate
 
     def to_tga_file(self, filename="out.tga"):
 

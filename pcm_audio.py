@@ -43,7 +43,8 @@ class PcmAudio:
             wave_file.setnchannels(1)
             wave_file.setframerate(self.sampling_rate)
             wave_file.setsampwidth(2)
-            wave_file.writeframes(struct.pack("<%dh" % len(self.samples), *self.samples))
+            samples = self.samples.astype(int).tolist()
+            wave_file.writeframes(struct.pack("<%dh" % len(self.samples), *samples))
 
     @property
     def duration(self):

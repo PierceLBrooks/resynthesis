@@ -34,7 +34,7 @@ class _Sound(Genome):
 
         self._amplitude_envelope_points = [
             self.random_amplitude_envelope_point()
-            for _ in xrange(self._point_count)
+            for _ in range(self._point_count)
         ]
 
     def mutate(self, rate):
@@ -280,7 +280,7 @@ def get_sound_factory(reference_pcm_audio, base_pcm_audio=None):
         )
 
     Sound._frequencies_weights = numpy.array(
-        map(weight_by_frequency, Sound._reference_spectrogram.get_frequencies(
-            Sound._reference_pcm_audio.sampling_rate)))
+        list(map(weight_by_frequency, Sound._reference_spectrogram.get_frequencies(
+            Sound._reference_pcm_audio.sampling_rate))))
 
     return Sound

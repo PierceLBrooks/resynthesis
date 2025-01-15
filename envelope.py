@@ -26,7 +26,7 @@ class Envelope:
 
         self.__points.sort(key=lambda point: point.time)
 
-        x = numpy.fromiter((point.time for point in self.__points), numpy.float)
-        y = numpy.fromiter((point.value for point in self.__points), numpy.float)
+        x = numpy.fromiter((point.time for point in self.__points), float)
+        y = numpy.fromiter((point.value for point in self.__points), float)
 
         return numpy.interp(time_points, x, y)

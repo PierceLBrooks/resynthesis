@@ -1,5 +1,5 @@
 import os.path
-from StringIO import StringIO
+from io import StringIO
 
 import numpy
 
@@ -21,20 +21,20 @@ def resynthesize(reference_pcm_audio):
     sounds = []
 
     if os.path.exists("base.wav"):
-        print "Using 'base.wav' as a base sound for additive sythesis"
+        print("Using 'base.wav' as a base sound for additive sythesis")
         pcm_audio = PcmAudio.from_wave_file("base.wav")
 
-    for index in xrange(20):
+    for index in range(20):
 
         genome_factory = get_sound_factory(reference_pcm_audio, pcm_audio)
         population = Population(genome_factory, 80)
         best_sound = algorithm.run(population)
 
         if best_score is not None and best_sound.score < best_score:
-            print "The algorithm failed to produce a better sound on this step"
+            print("The algorithm failed to produce a better sound on this step")
             break
 
-        print best_sound
+        print(best_sound)
         pcm_audio = best_sound.to_pcm_audio()
         pcm_audio.to_wave_file("debug%d.wav" % index)
 
@@ -70,7 +70,7 @@ def construct_csound_file(sounds, pcm_audio, filename="out.csd"):
     # Construct instrument code
     code_stream = StringIO()
 
-    print >> code_stream, "aResult = 0"
+    print("aResult = 0", file=code_stream)
 
     for sound in sounds:
         signal = (
@@ -82,7 +82,7 @@ def construct_csound_file(sounds, pcm_audio, filename="out.csd"):
                 normalized_phase=sound._phase / (2 * numpy.pi)
             )
         )
-        print >> code_stream, signal
+        print(signal, file=code_stream)
 
         sound._sort_amplitude_envelope_points()
 
@@ -108,11 +108,11 @@ def construct_csound_file(sounds, pcm_audio, filename="out.csd"):
             )
             previous_point_time = time / sound_duration
         envelope = "{envelope}, 0, 0".format(envelope=envelope)
-        print >> code_stream, envelope
+        print(envelope, file=code_stream)
 
-        print >> code_stream, "aResult = aResult + aSignal * aEnvelope"
+        print("aResult = aResult + aSignal * aEnvelope", file=code_stream)
 
-    print >> code_stream, "out aResult"
+    print("out aResult", file=code_stream)
 
     instrument_code = code_stream.getvalue()
 
@@ -132,4 +132,4 @@ def construct_csound_file(sounds, pcm_audio, filename="out.csd"):
     output = output.replace("; %score%", score)
 
     with open(filename, "w") as output_file:
-        print >> output_file, output
+        print(output, file=output_file)

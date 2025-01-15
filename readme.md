@@ -1,3 +1,3 @@
-Описание проекта
+Project Description
 ----------------
-Дипломный проект на тему "Воссоздание звуков при помощи генетического алгоритма и аддитивного синтеза"
+Diploma project on the topic "Recreation of sounds using a genetic algorithm and additive synthesis"

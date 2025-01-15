@@ -36,7 +36,7 @@ class Population(object):
     def __init__(self, genome_factory, size):
         self._generation_count = 0
         self._size = size
-        self._genomes = [genome_factory() for _ in xrange(size)]
+        self._genomes = [genome_factory() for _ in range(size)]
 
     def select(self, selection_rate):
         selected_count = int(self._size * selection_rate)
@@ -90,7 +90,7 @@ class Population(object):
 class GeneticAlgorithm(object):
 
     def __init__(self):
-        self.generation_limit = sys.maxint
+        self.generation_limit = sys.maxsize
         self.generations_without_improvement_limit = 30
         self.score_improvement_threshold = 100
         self.selection_rate = 0.5
@@ -104,7 +104,7 @@ class GeneticAlgorithm(object):
 
         last_generations_scores = deque()
 
-        for generation_index in xrange(self.generation_limit):
+        for generation_index in range(self.generation_limit):
 
             population.select(self.selection_rate)
             population.crossbreed()
