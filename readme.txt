@@ -10,6 +10,6 @@ Usage
 
 ----------------
 
-Windows: run.bat input.wav output.wav
-Unix: $PWD/run.sh input.wav output.wav
+Windows: run.bat input.wav output.wav 20 80
+Unix: $PWD/run.sh input.wav output.wav 20 80
 

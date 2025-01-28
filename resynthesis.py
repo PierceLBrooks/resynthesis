@@ -1,3 +1,4 @@
+import sys
 import os.path
 from io import StringIO
 
@@ -24,10 +25,16 @@ def resynthesize(reference_pcm_audio):
         print("Using 'base.wav' as a base sound for additive sythesis")
         pcm_audio = PcmAudio.from_wave_file("base.wav")
 
-    for index in range(20):
-
+    generations = 20
+    populations = 80
+    if len(sys.argv) > 3:
+        generations = int(sys.argv[3])
+    if len(sys.argv) > 4:
+        populations = int(sys.argv[4])
+    for generation in range(generations):
+        print(str(generation) + " / " + str(generations) + " @ " + str(populations))
         genome_factory = get_sound_factory(reference_pcm_audio, pcm_audio)
-        population = Population(genome_factory, 80)
+        population = Population(genome_factory, populations)
         best_sound = algorithm.run(population)
 
         if best_score is not None and best_sound.score < best_score:
@@ -36,7 +43,7 @@ def resynthesize(reference_pcm_audio):
 
         print(best_sound)
         pcm_audio = best_sound.to_pcm_audio()
-        pcm_audio.to_wave_file("debug%d.wav" % index)
+        pcm_audio.to_wave_file("debug%d.wav" % generation)
 
         Spectrogram(pcm_audio.samples).to_tga_file()
 
