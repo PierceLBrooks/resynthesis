@@ -8,10 +8,33 @@ from algorithm import GeneticAlgorithm, Population
 from pcm_audio import PcmAudio
 from sound import get_sound_factory
 from spectrogram import Spectrogram
+from PIL import Image
 
+def get_distance(left, right):
+    distance = 0.0
+    for i in range(min(3, min(len(left), len(right)))):
+        distance += (left[i] - right[i]) ** 2.0
+    return distance ** 0.5
+
+def get_comparison(left, right):
+    similarity = 0.0
+    left_image = Image.open(left)
+    right_image = Image.open(right)
+    left_size = left_image.size
+    right_size = right_image.size
+    left_pixels = left_image.load()
+    right_pixels = right_image.load()
+    width = min(left_size[0], right_size[0])
+    height = min(left_size[1], right_size[1])
+    for x in range(width):
+        for y in range(height):
+            similarity += get_distance(list(left_pixels[x, y]), list(right_pixels[x, y])) / 441.673
+    similarity /= float(width) * float(height)
+    similarity = 1.0 - min(1.0, max(0.0, similarity))
+    similarity *= 100.0
+    return int(similarity)
 
 def resynthesize(reference_pcm_audio):
-
     Spectrogram(reference_pcm_audio.samples).to_tga_file(
         "reference_spectrogram.tga")
 
@@ -45,7 +68,8 @@ def resynthesize(reference_pcm_audio):
         pcm_audio = best_sound.to_pcm_audio()
         pcm_audio.to_wave_file("debug%d.wav" % generation)
 
-        Spectrogram(pcm_audio.samples).to_tga_file()
+        Spectrogram(pcm_audio.samples).to_tga_file("out.tga")
+        print("reference_spectrogram.tga - out.tga = " + str(get_comparison(os.path.join(os.getcwd(), "reference_spectrogram.tga"), os.path.join(os.getcwd(), "out.tga"))) + "%")
 
         best_score = best_sound.score
 
@@ -57,7 +81,6 @@ def resynthesize(reference_pcm_audio):
 
 
 def construct_csound_file(sounds, pcm_audio, filename="out.csd"):
-
     signed_short_max = 2**15 - 1
 
     sound_duration = pcm_audio.duration
